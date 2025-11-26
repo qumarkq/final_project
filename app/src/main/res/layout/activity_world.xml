@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootWorld"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_world">
+
+    <!-- 先把 11 隻雞都放在畫面下方附近，之後會用程式讓它們亂走。
+         位置只是一開始的參考，不重要。 -->
+
+    <ImageView
+        android:id="@+id/ivAnimal0"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal1"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal2"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal3"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="90dp"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal4"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal5"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/chicken_small" />
+
+    <!-- 再多 5 隻，先放在中下方，之後一樣會亂走 -->
+
+    <ImageView
+        android:id="@+id/ivAnimal6"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal7"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginStart="40dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal8"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="40dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal9"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="120dp"
+        android:src="@drawable/chicken_small" />
+
+    <ImageView
+        android:id="@+id/ivAnimal10"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="120dp"
+        android:src="@drawable/chicken_small" />
+
+    <Button
+        android:id="@+id/btnToRice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="去稻田"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp" />
+
+</FrameLayout>

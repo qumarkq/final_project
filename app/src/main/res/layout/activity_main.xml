@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp"
+    android:paddingTop="-50dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_farm">
+
+    <!-- 動物圖片 + 浮動台詞 -->
+    <FrameLayout
+        android:id="@+id/chickenContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="24dp">
+
+        <ImageView
+            android:id="@+id/ivChicken"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/chicken_small" />
+
+        <TextView
+            android:id="@+id/tvFloatingMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="感謝餵食！"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:background="#80000000"
+            android:padding="6dp"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="-10dp"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="預設文字"
+        android:textSize="22sp"
+        android:layout_marginBottom="24dp"
+        android:background="#AAFFFFFF"
+        android:padding="8dp"/>
+
+    <Button
+        android:id="@+id/btnFeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="餵食" />
+</LinearLayout>
+
