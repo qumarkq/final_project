@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.media.MediaPlayer
 import android.view.View
 import android.util.TypedValue
 
@@ -25,27 +24,16 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var chickenDao: ChickenDao
-    private lateinit var riceDao: RiceDao   // ⭐ 稻米 DAO
-
-    private var bgmPlayer: MediaPlayer? = null
+    private lateinit var riceDao: RiceDao
 
     private var tickCount = 0
 
-    // 每 5 秒更新一次雞的狀態
     private val tickIntervalMs = 5_000L
     private val handler = Handler(Looper.getMainLooper())
 
-    private val feedMessages = listOf(
-        "謝謝主人，我肚子好餓～",
-        "好好吃喔，再多一點可以嗎？",
-        "感覺有力氣了！一起玩吧！",
-        "嗚哇，是我最喜歡的飼料！",
-        "今天也是被好好照顧的一天～",
-        "謝謝你沒有忘記我 ❤",
-        "再不來我就要生氣啾了！",
-        "吃飽了，好幸福～",
-        "啾啾～我會努力長大給你看！"
-    )
+    // ⭐ 修改：不再直接寫死字串列表，改為延遲載入 (因為需要 Context 才能讀取資源)
+    // 這裡只宣告變數，稍後在 onCreate 或是使用時讀取 strings.xml
+    private lateinit var feedMessages: Array<String>
 
     private val tickRunnable = object : Runnable {
         override fun run() {
@@ -58,17 +46,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // ⭐ 初始化訊息列表 (從 XML 讀取)
+        feedMessages = resources.getStringArray(R.array.feed_messages_array)
+
         // --- 初始化資料庫與 DAO ---
         db = AppDatabase.getInstance(this)
         chickenDao = db.chickenDao()
         riceDao = db.riceDao()
 
-        // --- 背景音樂 ---
-        bgmPlayer = MediaPlayer.create(this, R.raw.bgm_farm)
-        bgmPlayer?.isLooping = true
-        bgmPlayer?.start()
-
-        // --- 取得從 World 傳來的參數（修正 getIntent 問題）---
+        // --- 取得從 World 傳來的參數 ---
         currentAnimalId = intent.getIntExtra(EXTRA_ANIMAL_ID, 0)
         val initialExpFromWorld = intent.getIntExtra(EXTRA_INITIAL_EXP, 0)
 
@@ -94,30 +80,22 @@ class MainActivity : AppCompatActivity() {
             onFeedClicked(tvInfo)
         }
 
-        // 啟動定時更新雞的狀態
         handler.postDelayed(tickRunnable, tickIntervalMs)
     }
 
-    // ⭐ 餵食邏輯：先檢查稻米庫存，再餵雞
+    // ⭐ 餵食邏輯
     private fun onFeedClicked(tvInfo: TextView) {
-        // 先從資料庫拿當前稻米欄位
         val field = riceDao.getField()
 
         if (field == null || field.stock <= 0) {
-            // 沒有田或庫存 = 0 → 無法餵食
-            Toast.makeText(
-                this,
-                "沒有稻米飼料了！請先去稻田收割～",
-                Toast.LENGTH_SHORT
-            ).show()
+            // ⭐ 修改：使用 R.string 資源，解決硬編碼警告
+            Toast.makeText(this, R.string.toast_no_rice, Toast.LENGTH_SHORT).show()
             return
         }
 
-        // 有庫存 → 扣 1 份
         val newField = field.copy(stock = field.stock - 1)
         riceDao.update(newField)
 
-        // 照原本規則餵食
         chicken.hunger = (chicken.hunger - 20).coerceAtLeast(0)
         chicken.mood = (chicken.mood + 10).coerceAtMost(100)
         chicken.exp += 1
@@ -125,7 +103,8 @@ class MainActivity : AppCompatActivity() {
         saveChicken()
         updateUi(tvInfo)
 
-        Toast.makeText(this, "餵食成功！(消耗 1 份稻米)", Toast.LENGTH_SHORT).show()
+        // ⭐ 修改：使用 R.string 資源
+        Toast.makeText(this, R.string.toast_feed_success, Toast.LENGTH_SHORT).show()
 
         val message = feedMessages.random()
         showFloatingMessage(message)
@@ -159,26 +138,11 @@ class MainActivity : AppCompatActivity() {
             .start()
     }
 
-    override fun onPause() {
-        super.onPause()
-        bgmPlayer?.pause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (bgmPlayer != null && !bgmPlayer!!.isPlaying) {
-            bgmPlayer?.start()
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(tickRunnable)
-        bgmPlayer?.release()
-        bgmPlayer = null
     }
 
-    // 每 5 秒自動變餓 / 掉心情 / 掉健康 / 加經驗
     private fun onTimeTick() {
         chicken.hunger = (chicken.hunger + 5).coerceAtMost(100)
 
@@ -213,43 +177,49 @@ class MainActivity : AppCompatActivity() {
         chickenDao.upsert(entity)
     }
 
-    // 更新畫面＋依 EXP 切換四種雞圖，並顯示飼料庫存
+    // ⭐ 修改：UI 更新邏輯，完全消除字串串接警告
     private fun updateUi(tv: TextView) {
         val ivChicken: ImageView = findViewById(R.id.ivChicken)
 
-        val stage: String = when {
+        // 取得對應等級的字串資源 ID
+        val stageResId: Int = when {
             chicken.exp < 10 -> {
                 ivChicken.setImageResource(R.drawable.chicken_small)
-                "小雞"
+                R.string.stage_small
             }
             chicken.exp < 20 -> {
                 ivChicken.setImageResource(R.drawable.chicken_middle)
-                "中雞"
+                R.string.stage_middle
             }
             chicken.exp < 30 -> {
                 ivChicken.setImageResource(R.drawable.chicken_mid_big)
-                "大中雞"
+                R.string.stage_mid_big
             }
             else -> {
                 ivChicken.setImageResource(R.drawable.chicken_big)
-                "大雞"
+                R.string.stage_big
             }
         }
+        // 透過 ID 取得實際字串
+        val stageText = getString(stageResId)
 
-        // 性別（顯示中文）
-        val genderText = if (chicken.gender == Gender.MALE) "公雞" else "母雞"
+        // 取得性別字串
+        val genderResId = if (chicken.gender == Gender.MALE) R.string.gender_male else R.string.gender_female
+        val genderText = getString(genderResId)
 
-        // 顯示飼料庫存（用 riceDao，避免重複呼叫 db）
         val stock = riceDao.getField()?.stock ?: 0
 
-        tv.text = """
-        等級：$stage
-        性別：$genderText
-        飢餓：${chicken.hunger}
-        心情：${chicken.mood}
-        健康：${chicken.health}
-        EXP：${chicken.exp}
-        飼料庫存：$stock
-        """.trimIndent()
+        // ⭐ 核心修正：使用 getString 搭配參數，取代 Kotlin 的 $字串串接
+        // 對應到 strings.xml 中的 chicken_status_format
+        tv.text = getString(
+            R.string.chicken_status_format,
+            stageText,      // %1$s
+            genderText,     // %2$s
+            chicken.hunger, // %3$d
+            chicken.mood,   // %4$d
+            chicken.health, // %5$d
+            chicken.exp,    // %6$d
+            stock           // %7$d
+        )
     }
 }

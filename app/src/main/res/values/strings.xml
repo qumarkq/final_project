@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">ElectronicChicken2</string>
+    <string name="activity_world_str">小雞</string>
+
+    <string name="chicken_status_format">
+        等級：%1$s\n
+        性別：%2$s\n
+        飢餓：%3$d\n
+        心情：%4$d\n
+        健康：%5$d\n
+        EXP：%6$d\n
+        飼料庫存：%7$d
+    </string>
+
+    <string name="toast_no_rice">沒有稻米飼料了！請先去稻田收割～</string>
+    <string name="toast_feed_success">餵食成功！(消耗 1 份稻米)</string>
+
+    <string name="stage_small">小雞</string>
+    <string name="stage_middle">中雞</string>
+    <string name="stage_mid_big">大中雞</string>
+    <string name="stage_big">大雞</string>
+
+    <string name="gender_male">公雞</string>
+    <string name="gender_female">母雞</string>
+
+    <string-array name="feed_messages_array">
+        <item>謝謝主人，我肚子好餓～</item>
+        <item>好好吃喔，再多一點可以嗎？</item>
+        <item>感覺有力氣了！一起玩吧！</item>
+        <item>嗚哇，是我最喜歡的飼料！</item>
+        <item>今天也是被好好照顧的一天～</item>
+        <item>謝謝你沒有忘記我 ❤</item>
+        <item>再不來我就要生氣啾了！</item>
+        <item>吃飽了，好幸福～</item>
+        <item>啾啾～我會努力長大給你看！</item>
+    </string-array>
 </resources>
