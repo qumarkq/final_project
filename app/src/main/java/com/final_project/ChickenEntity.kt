@@ -12,4 +12,3 @@ data class ChickenEntity(
     val health: Int,
     val exp: Int
 )
-

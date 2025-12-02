@@ -124,6 +124,7 @@ class WorldActivity : AppCompatActivity() {
 
     // ========= 依等級更新世界畫面的雞圖 =========
 
+    //TODO
     private fun updateAnimalsUi() {
         updateSingleAnimalUi(0, defaultExp = 0, imageView = ivAnimal0)
         updateSingleAnimalUi(1, defaultExp = 0, imageView = ivAnimal1)
@@ -138,6 +139,7 @@ class WorldActivity : AppCompatActivity() {
         updateSingleAnimalUi(10, defaultExp = 0, imageView = ivAnimal10)
     }
 
+    //TODO
     private fun updateSingleAnimalUi(id: Int, defaultExp: Int, imageView: ImageView) {
         val saved = chickenDao.getChicken(id)
 

@@ -182,11 +182,11 @@ class MainActivity : AppCompatActivity() {
     private fun onTimeTick() {
         chicken.hunger = (chicken.hunger + 5).coerceAtMost(100)
 
-        if (chicken.hunger > 80) {
+        if (chicken.hunger >= 80) {
             chicken.mood = (chicken.mood - 2).coerceAtLeast(0)
         }
 
-        if (chicken.hunger >= 100) {
+        if (chicken.hunger == 100) {
             chicken.health = (chicken.health - 1).coerceAtLeast(0)
         }
 
