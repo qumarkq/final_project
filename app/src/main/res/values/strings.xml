@@ -34,4 +34,24 @@
         <item>吃飽了，好幸福～</item>
         <item>啾啾～我會努力長大給你看！</item>
     </string-array>
+
+    <string name="text_default_msg">預設</string>
+    <string name="text_default_info">預設文字</string>
+    <string name="btn_feed">餵食</string>
+    <string name="desc_chicken">這是一隻小雞</string>
+
+    <string name="stage_sowing">階段：播種</string>
+    <string name="stage_sprout">階段：發芽</string>
+    <string name="stage_growing">階段：成長</string>
+    <string name="stage_ripe">階段：結穗（可收割）</string>
+
+    <string name="rice_info_format">
+        %1$s\n成長度：%2$d / 100\n稻米庫存：%3$d
+    </string>
+
+    <string name="btn_action_harvest">收割並重新播種</string>
+    <string name="btn_action_care">照顧稻米（澆水/施肥）</string>
+
+    <string name="toast_grow">稻米成長了一點～</string>
+    <string name="toast_harvest">收割完成！飼料庫存 +%d（保留 1 份當種子）</string>
 </resources>

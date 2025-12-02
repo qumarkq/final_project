@@ -6,9 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlin.collections.forEach
 import kotlin.math.min
-import kotlin.text.trimIndent
 
 class RiceActivity : AppCompatActivity() {
 
@@ -46,7 +44,7 @@ class RiceActivity : AppCompatActivity() {
         tvInfo = findViewById(R.id.tvRiceInfo)
         btnAction = findViewById(R.id.btnRiceAction)
 
-        // 讀資料，沒有就初始化一塊田：剛播種、成長 0、沒有庫存
+        // 讀資料
         val saved = riceDao.getField()
         field = if (saved == null) {
             val initial = RiceFieldEntity(
@@ -70,14 +68,10 @@ class RiceActivity : AppCompatActivity() {
 
     private fun onActionClicked() {
         val f = field ?: return
-        val stage = RiceStage.valueOf(f.stage)
-
-        when (stage) {
+        when (val stage = RiceStage.valueOf(f.stage)) {
             RiceStage.SOWING, RiceStage.SPROUT, RiceStage.GROWING -> {
-                // 照顧稻米：成長度 +25，超過 100 當成 100
                 val newGrowth = min(100, f.growth + 25)
 
-                // 判斷是否進入下一階段
                 val newStage = when {
                     stage == RiceStage.SOWING  && newGrowth >= 25 -> RiceStage.SPROUT
                     stage == RiceStage.SPROUT  && newGrowth >= 50 -> RiceStage.GROWING
@@ -92,12 +86,11 @@ class RiceActivity : AppCompatActivity() {
                 riceDao.update(field!!)
                 updateUi()
 
-                Toast.makeText(this, "稻米成長了一點～", Toast.LENGTH_SHORT).show()
+                // 修改點：使用資源字串
+                Toast.makeText(this, getString(R.string.toast_grow), Toast.LENGTH_SHORT).show()
             }
 
             RiceStage.RIPE -> {
-                // 結穗 → 收割，增加庫存，並重新播種
-                // 規則：每次收成 10 份，其中 1 份留下當下一輪的種子 → 飼料庫存實際 +9
                 val addFeed = 9
                 val newStock = f.stock + addFeed
 
@@ -109,13 +102,10 @@ class RiceActivity : AppCompatActivity() {
                 riceDao.update(field!!)
                 updateUi()
 
-                Toast.makeText(
-                    this,
-                    "收割完成！飼料庫存 +$addFeed（保留 1 份當種子）",
-                    Toast.LENGTH_SHORT
-                ).show()
+                // 修改點：使用帶參數的資源字串 (%d 會被 addFeed 取代)
+                val msg = getString(R.string.toast_harvest, addFeed)
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 
@@ -123,7 +113,6 @@ class RiceActivity : AppCompatActivity() {
         val f = field ?: return
         val stage = RiceStage.valueOf(f.stage)
 
-        // 根據階段顯示不同圖片，套用到 9 塊田
         val imgRes = when (stage) {
             RiceStage.SOWING  -> R.drawable.rice_sowing
             RiceStage.SPROUT  -> R.drawable.rice_sprout
@@ -135,22 +124,22 @@ class RiceActivity : AppCompatActivity() {
             iv.setImageResource(imgRes)
         }
 
-        val stageText = when (stage) {
-            RiceStage.SOWING  -> "階段：播種"
-            RiceStage.SPROUT  -> "階段：發芽"
-            RiceStage.GROWING -> "階段：成長"
-            RiceStage.RIPE    -> "階段：結穗（可收割）"
-        }
+        // 修改點：不再直接寫死中文，而是根據狀態取得對應的 R.string
+        val stageText = getString(when (stage) {
+            RiceStage.SOWING  -> R.string.stage_sowing
+            RiceStage.SPROUT  -> R.string.stage_sprout
+            RiceStage.GROWING -> R.string.stage_growing
+            RiceStage.RIPE    -> R.string.stage_ripe
+        })
 
-        tvInfo.text = """
-            $stageText
-            成長度：${f.growth} / 100
-            稻米庫存：${f.stock}
-        """.trimIndent()
+        // 修改點：使用 getString 的格式化功能填入變數
+        // 對應 strings.xml 裡的 %1$s, %2$d, %3$d
+        tvInfo.text = getString(R.string.rice_info_format, stageText, f.growth, f.stock)
 
-        btnAction.text = when (stage) {
-            RiceStage.RIPE -> "收割並重新播種"
-            else           -> "照顧稻米（澆水/施肥）"
-        }
+        // 修改點：按鈕文字也改用資源
+        btnAction.text = getString(when (stage) {
+            RiceStage.RIPE -> R.string.btn_action_harvest
+            else           -> R.string.btn_action_care
+        })
     }
 }
